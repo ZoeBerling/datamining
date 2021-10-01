@@ -1,0 +1,60 @@
+import numpy as np
+from csv import reader
+
+def getMonth(inDate):
+	return( int( inDate[5:7] ) )
+
+def getLocationIndex(inLoc):
+	count = 0
+	while (locations[count] != inLoc) and (count < len(locations)-1):
+		count += 1
+	return(count)
+
+def getCatIndex(inCat):
+	count = 0
+	while (itemCategories[count] != inCat) and (count < len(itemCategories)-1):
+		count += 1
+	return(count)
+
+
+locations = ['SouthGlenn','Tamarac','HighlandsRanch','ColoradoBlvd','WashingtonPark','CherryCreek','GovernorsRanch','UnionStation','CastleRock']
+itemCategories = ['produce','meat','bakery','freezer','dairy','deli','snack','softdrinks','beer','household']
+numLocations = len(locations)
+numItemCategories = len(itemCategories)
+
+cube = np.zeros((12, numLocations, numItemCategories))
+cube2 = np.zeros((12, numLocations, numItemCategories))
+
+cube_tuple = np.zeros((12, numLocations, numItemCategories), dtype=[('x', 'int'), ('y', 'float')])
+
+price = 0
+with open('ds_ex3_csv.txt', 'r') as read_obj:
+    csv_reader = reader(read_obj)
+    for row in csv_reader:
+        # row = row[0].split(",")
+        # print(row)
+        dateIndex = getMonth(row[3])-1
+        locIndex = getLocationIndex(row[4])
+        catIndex = getCatIndex(row[5])
+        cube2[dateIndex][locIndex][catIndex] += int(row[1])
+        cube[dateIndex][locIndex][catIndex] += float(row[2])
+        
+        cube_tuple[dateIndex][locIndex][catIndex][0] += int(row[1])
+        cube_tuple[dateIndex][locIndex][catIndex][1] += float(row[2])
+        
+
+# roll-up down price
+sum_category_location = print(np.sum(cube, axis = 0))
+sum_month_loc = print(np.transpose(np.sum(np.transpose(cube), axis = 0)))
+sum_month_cat = print(np.sum(cube, axis = 1))
+
+# roll-up number of items
+num_sum_category_location = print(np.sum(cube2, axis = 0)[0])
+num_sum_month_loc = print(np.transpose(np.sum(np.transpose(cube2), axis = 0)))
+num_sum_month_cat = print(np.sum(cube2, axis = 1))
+
+
+# Union Station and Cherry Creek sells fewer items than other locations
+# Even though Union Station moves less inventory, people spend a comparable amount
+# People spend more at Highlands Ranch 
+# (month_cat) Household goods sell substantially less than other categories         
