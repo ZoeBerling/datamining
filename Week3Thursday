@@ -51,7 +51,7 @@ sum_month_cat = print(np.sum(cube, axis = 1))
 # roll-up number of items
 num_sum_category_location = print(np.sum(cube2, axis = 0)[0])
 num_sum_month_loc = print(np.transpose(np.sum(np.transpose(cube2), axis = 0)))
-num_sum_month_cat = print(np.sum(cube2, axis = 1))
+num_sum_month_cat = print(np.sum(cube2, axis = 1))  # Month vs ItemCategory 2D cube
 
 
 # Union Station and Cherry Creek sells fewer items than other locations
