@@ -1,65 +1,138 @@
-import pandas as pd
+from csv import reader
 import numpy as np
 
+itemSetCount = dict()
 
-dat = pd.read_csv("ds_ex2.txt")
-labels = ["ID", "height", "bmi", "weight", "LDL", "Systol"]
-dat = pd.DataFrame(dat)
-dat.columns = labels
+NUMTRANS = 0
 
-dat2 = dat.loc[dat["LDL"] != -1].copy()
-co1 = dat2["height"].corr(dat2["bmi"])
-co2 = dat2["height"].corr(dat2["weight"])
-co3 = dat2["height"].corr(dat2["LDL"])
-co4 = dat2["height"].corr(dat2["Systol"])
-co5 = dat2["bmi"].corr(dat2["weight"])
-co6 = dat2["bmi"].corr(dat2["LDL"])
-co7 = dat2["bmi"].corr(dat2["Systol"])
-co8 = dat2["weight"].corr(dat2["LDL"])
-co9 = dat2["weight"].corr(dat2["Systol"])
-co10 = dat2["LDL"].corr(dat2["Systol"])
-coeffs2 = np.array([co1, co2, co3, co4, co5, co6, co7, co8, co9, co10])
+minSupCount = 3
 
-corrLabels = ["height:bmi", "height:weight", "height:LDL", "height:Systol", "bmi:weight", "bmi:LDL", "bmi:Systol", "weight:LDL", "weight:Systol", "LDL:Systol"]
+read_obj = open("inputExercise4.csv.txt", "r")
 
-print("Means of columns 2, 3, 4, 5 with -1's removed\n")
-corr2 = pd.DataFrame([coeffs2], columns = corrLabels)
-print(dat2.mean().iloc[1:5])
-print(f"\nCorrelation coefficients for first dataframe \n {corr2}")
+csv_reader = reader(read_obj)
 
+for row in csv_reader:
 
-dat3 = dat.copy()
-oldMean = dat2["LDL"].mean()
-dat3["LDL"].replace({-1: oldMean}, inplace=True)
+    NUMTRANS += 1
 
+    itemSet = ''
 
-co1 = dat3["height"].corr(dat3["bmi"])
-co2 = dat3["height"].corr(dat3["weight"])
-co3 = dat3["height"].corr(dat3["LDL"])
-co4 = dat3["height"].corr(dat3["Systol"])
-co5 = dat3["bmi"].corr(dat3["weight"])
-co6 = dat3["bmi"].corr(dat3["LDL"])
-co7 = dat3["bmi"].corr(dat3["Systol"])
-co8 = dat3["weight"].corr(dat3["LDL"])
-co9 = dat3["weight"].corr(dat3["Systol"])
-co10 = dat3["LDL"].corr(dat3["Systol"])
+    for i in range(len(row)):
+        itemSet += row[i]
 
-coeffs3 = np.array([co1, co2, co3, co4, co5, co6, co7, co8, co9, co10])
+    if (itemSet in itemSetCount):
+
+        itemSetCount[itemSet] = itemSetCount[itemSet] + 1
+
+    else:
+
+        itemSetCount[itemSet] = 1
+#
+# print(itemSetCount)
+
+sortedByCount = ({k: v for k, v in sorted(itemSetCount.items(), key=lambda item: item[1])})
+
+# print("\nAfter sorting by value:")
+#
+#print(sortedByCount)
+#
+# print("\nhere are the frequent itemsets ")
+
+# for k, v in sortedByCount.items():
+#
+#     if (v >= minSupCount):
+#        # print(str(k) + '  ' + str(v))
 
 
-print("Means of columns 2, 3, 4, 5 with -1's replaced with 129.904412\n")
-corr3 = pd.DataFrame([coeffs3], columns = corrLabels)
-print(dat3.mean().iloc[1:5])
-print(f"\nCorrelation coefficients for second dataframe \n {corr3}")
+read_obj = open("inputExercise4.csv.txt", "r")
+csv_reader = reader(read_obj)
+
+# all 5-itemsets
+for row in csv_reader:
 
 
+    for a in range(len(row) - 4):  # note the -2 at the end
+
+        for b in range(a + 1, len(row) - 3):  # note  the -1 at the end
+
+            for c in range(b + 1, len(row) - 2):
+
+                for d in range(c + 1, len(row) - 1):
+
+                    for e in range(d + 1, len(row)):
+
+                        itemSet = row[a] + row[b] + row[c] + row[d] + row[e]
+                        if itemSet in sortedByCount.keys():
+                            sortedByCount[itemSet] += 1
+
+# row content a 4-itemset
+read_obj = open("inputExercise4.csv.txt", "r")
+csv_reader = reader(read_obj)
+
+for row in csv_reader:
+    for a in range(len(row) - 3):  # note the -2 at the end
+
+        for b in range(a + 1, len(row) - 2):  # note  the -1 at the end
+
+            for c in range(b + 1, len(row) - 1):
+
+                for d in range(c + 1, len(row)):
+
+                    itemSet = row[a] + row[b] + row[c] + row[d]
+                    if itemSet in sortedByCount.keys():
+                        sortedByCount[itemSet] += 1
+
+# row content a 3-itemset
+read_obj = open("inputExercise4.csv.txt", "r")
+csv_reader = reader(read_obj)
+
+for row in csv_reader:
+    for a in range(len(row) - 2):  # note the -2 at the end
+
+        for b in range(a + 1, len(row) - 1):  # note  the -1 at the end
+
+            for c in range(b + 1, len(row)):
+
+                itemSet = row[a] + row[b] + row[c]
+                if itemSet in sortedByCount.keys():
+                    sortedByCount[itemSet] += 1
 
 
+# row content a 2-itemset
+read_obj = open("inputExercise4.csv.txt", "r")
+csv_reader = reader(read_obj)
+
+for row in csv_reader:
+    for a in range(len(row) - 1):  # note the -2 at the end
+
+        for b in range(a + 1, len(row)):  # note  the -1 at the end
+
+            itemSet = row[a] + row[b]
+            if itemSet in sortedByCount.keys():
+                sortedByCount[itemSet] += 1
 
 
+# row content a 1-itemset
+read_obj = open("inputExercise4.csv.txt", "r")
+csv_reader = reader(read_obj)
+for row in csv_reader:
+    for a in range(len(row)):
+        itemSet = row[a]
+        if itemSet in sortedByCount.keys():
+            sortedByCount[itemSet] += 1
+
+#print(sortedByCount)
+
+newDict = {key:value for key,value in sortedByCount.items() if value > 400}
+print(newDict)
 
 
+lst = []
+for key in newDict.keys():
+    for char in key:
+       conf = newDict[key]/newDict[char]
+       print(conf)
+       if conf > .5:
+           lst.append([key, char, conf])
 
-
-
-
+print(lst)
