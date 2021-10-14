@@ -156,7 +156,24 @@ freq_items = apriori(df2,min_support=0.03,use_colnames=True)
 print("\n\nfreq_items:")
 print(freq_items)
 
+# now mine the rules by calling association_rules
+print("\n\nThe rules:")
+rules = association_rules(freq_items, metric="confidence", min_threshold=0.5)
+print(type(rules))
+
+# rename columns "antecedents support" to "antsup" and "consequents support" to "consup" so print nicer table
+rules.columns = [ 'antecedents', 'consequents', 'antsup', 'consup', 'support', 'confidence', 'lift', 'leverage', 'conviction']
+print(rules.columns)
+# print( rules[ ["antecedents","consequents","support","confidence","lift"] ] )
+# print( rules[ ["antecedents","antsup","consequents","consup","support","confidence","lift"] ] )
+print( rules[ ["antecedents","consequents","antsup","consup","support","confidence","lift"] ] )
+
 
 """a) Which are the three most common ingredients? (i.e most common 1-itemsets) """
+# garam masala: support = .105882
+# ginger: support = .113725
+# sugar: support = .188235
 """b) What is the most common pair of ingreditents? (i.e most common 2-itemset) """
+#  (ghee, sugar): support = 0.062745
 """c) What are your 3-5 most "interesting" rules? """
+#
